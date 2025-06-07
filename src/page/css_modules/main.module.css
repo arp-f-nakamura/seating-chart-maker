@@ -1,0 +1,14 @@
+.tableCountDiv {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.SeatingChartDiv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.margin {
+  margin: 8px;
+}
