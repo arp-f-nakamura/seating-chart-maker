@@ -4,8 +4,6 @@ import { SeatingChart } from "../component/SeatingChart";
 import classes from "./css_modules/main.module.css";
 
 export const MainPage = () => {
-  /** 座席表設定の開閉 */
-  const [isSettingOpen, setIsSettingOpen] = useState(true);
   /** 入力欄の状態 */
   const [tableCountInput, setTableCountInput] = useState(0);
   /** 卓名リスト */
@@ -18,12 +16,6 @@ export const MainPage = () => {
   const [seats, setSeats] = useState<Record<string, string[]>>({});
   /** 名簿 */
   const [userName, setUserName] = useState("");
-
-  /** 座席設定開閉ボタン押下時のロジック */
-  const onClickSettingDisplay = () => {
-    const newSettingFlag = !isSettingOpen;
-    setIsSettingOpen(newSettingFlag);
-  };
 
   /** 卓数変更時のロジック */
   const handleTableCountChange = (value: number) => {
@@ -46,18 +38,6 @@ export const MainPage = () => {
 
   /** 座席表作成！ボタン押下時のロジック */
   const onClickCleateSeats = () => {
-    // すでに1席以上登録されている場合に警告
-    const alreadyCreated = Object.values(seats).some(
-      (seatList) => seatList.length > 0
-    );
-
-    if (alreadyCreated) {
-      const proceed = window.confirm(
-        "現在の座席表はリセットされます。\n上書きしてもよろしいですか？"
-      );
-      if (!proceed) return;
-    }
-
     const newSeats: Record<string, string[]> = {};
     tables.forEach((tableName) => {
       const count = tableSeatCounts[tableName] ?? 0;
@@ -123,9 +103,6 @@ export const MainPage = () => {
 
       if (alreadyCreated) {
         e.preventDefault();
-        // 非推奨プロパティだが、仕様として必要なため明示的に型アサーション
-        (e as any).returnValue =
-          "作成済みの座席表があります。ページを離れますか？";
       }
     };
 
@@ -139,31 +116,26 @@ export const MainPage = () => {
   return (
     <>
       <h2 className={classes.margin}>座席表メーカー</h2>
-      <div style={{ display: isSettingOpen ? "block" : "none" }}>
-        <Input
-          title="卓数"
-          value={!isNaN(tableCountInput) ? tableCountInput : ""}
-          onChange={(e) => handleTableCountChange(Number(e.target.value))}
-          buttonDetail={{
-            title: "座席表作成！",
-            onClick: onClickCleateSeats,
-          }}
-        />
-        <div className={`${classes.tableCountDiv} ${classes.margin}`}>
-          {tables.map((name) => (
-            <div key={name}>
-              <Input
-                title={`${name}卓`}
-                value={tableSeatCounts[name]}
-                onChange={(e) => handleSeatCountChange(name, e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
+      <Input
+        title="卓数"
+        value={!isNaN(tableCountInput) ? tableCountInput : ""}
+        onChange={(e) => handleTableCountChange(Number(e.target.value))}
+        buttonDetail={{
+          title: "座席表作成！",
+          onClick: onClickCleateSeats,
+        }}
+      />
+      <div className={`${classes.tableCountDiv} ${classes.margin}`}>
+        {tables.map((name) => (
+          <div key={name}>
+            <Input
+              title={`${name}卓`}
+              value={tableSeatCounts[name]}
+              onChange={(e) => handleSeatCountChange(name, e.target.value)}
+            />
+          </div>
+        ))}
       </div>
-      <button onClick={onClickSettingDisplay} className={classes.margin}>
-        {isSettingOpen ? "🔼閉じる" : "🔽開く"}
-      </button>
       <div className={`${classes.SeatingChartDiv} ${classes.margin}`}>
         {Object.entries(seats).map(([name, names]) => (
           <SeatingChart
