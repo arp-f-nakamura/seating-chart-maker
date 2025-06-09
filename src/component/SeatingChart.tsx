@@ -5,7 +5,6 @@ type SeatingChartProps = {
   name: string;
   seatCounts: number;
   names: string[];
-  isEditing: boolean;
   onChangeSeatName: (seatIndex: number, newName: string) => void;
   onDeleteSeatName: (seatIndex: number) => void;
 };
@@ -14,7 +13,6 @@ export const SeatingChart = ({
   name,
   seatCounts,
   names,
-  isEditing,
   onChangeSeatName,
   onDeleteSeatName,
 }: SeatingChartProps) => {
@@ -26,13 +24,8 @@ export const SeatingChart = ({
           key={i}
           title={`席${i + 1}`}
           value={names[i]}
-          disabled={!isEditing}
           onChange={(e) => onChangeSeatName(i, e.target.value)}
-          buttonDetail={
-            isEditing
-              ? { title: "削除", onClick: () => onDeleteSeatName(i) }
-              : undefined
-          }
+          buttonDetail={{ title: "削除", onClick: () => onDeleteSeatName(i) }}
         />
       ))}
     </div>

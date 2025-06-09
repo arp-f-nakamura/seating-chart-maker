@@ -16,8 +16,6 @@ export const MainPage = () => {
   const [seats, setSeats] = useState<Record<string, string[]>>({});
   /** 名簿 */
   const [userName, setUserName] = useState("");
-  /** 座席表の編集モード */
-  const [isEditing, setIsEditing] = useState(false);
 
   /** 卓数変更時のロジック */
   const handleTableCountChange = (value: number) => {
@@ -145,7 +143,6 @@ export const MainPage = () => {
             name={name}
             seatCounts={names.length}
             names={names}
-            isEditing={isEditing}
             onChangeSeatName={(seatIndex, newName) => {
               setSeats((prev) => ({
                 ...prev,
@@ -163,20 +160,12 @@ export const MainPage = () => {
           />
         ))}
       </div>
-      <div>
-        <Input
-          title={`名前`}
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          buttonDetail={{ title: "座席をきめる！", onClick: onClickChooseSeat }}
-        />
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={classes.margin}
-        >
-          {isEditing ? "編集完了" : "座席表編集"}
-        </button>
-      </div>
+      <Input
+        title={`名前`}
+        value={userName}
+        onChange={(e) => setUserName(e.target.value)}
+        buttonDetail={{ title: "座席をきめる！", onClick: onClickChooseSeat }}
+      />
     </>
   );
 };
