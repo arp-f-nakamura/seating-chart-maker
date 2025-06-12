@@ -12,6 +12,8 @@ export const MainPage = () => {
   const [tableSeatCounts, setTableSeatCounts] = useState<
     Record<string, number>
   >({});
+  /** 名前ボタンの表示フラグ */
+  const [chooseSeatFlg, setChooseSeatFlg] = useState<boolean>(false);
   /** 座席表 */
   const [seats, setSeats] = useState<Record<string, string[]>>({});
   /** 名簿 */
@@ -48,6 +50,7 @@ export const MainPage = () => {
       );
     });
     setSeats(newSeats);
+    setChooseSeatFlg(true);
   };
 
   /** 各卓の席数変更時のロジック */
@@ -160,12 +163,14 @@ export const MainPage = () => {
           />
         ))}
       </div>
-      <Input
-        title={`名前`}
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
-        buttonDetail={{ title: "座席をきめる！", onClick: onClickChooseSeat }}
-      />
+      {chooseSeatFlg && (
+        <Input
+          title={`名前`}
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          buttonDetail={{ title: "座席をきめる！", onClick: onClickChooseSeat }}
+        />
+      )}
     </>
   );
 };
