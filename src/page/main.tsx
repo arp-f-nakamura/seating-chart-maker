@@ -4,6 +4,8 @@ import { SeatingChart } from "../component/SeatingChart";
 import classes from "./css_modules/main.module.css";
 
 export const MainPage = () => {
+  /** イベント名 */
+  const [eventName, setEventName] = useState("");
   /** 入力欄の状態 */
   const [tableCountInput, setTableCountInput] = useState(0);
   /** 卓名リスト */
@@ -19,6 +21,10 @@ export const MainPage = () => {
   /** 名簿 */
   const [userName, setUserName] = useState("");
 
+  /** イベント名変更時のロジック */
+  const handleEventNameChange = (value: string) => {
+    setEventName(value);
+  };
   /** 卓数変更時のロジック */
   const handleTableCountChange = (value: number) => {
     setTableCountInput(value);
@@ -49,8 +55,9 @@ export const MainPage = () => {
         (_, i) => old[i] || ""
       );
     });
+    const newFlg: boolean = chooseSeatFlg ? false : true;
     setSeats(newSeats);
-    setChooseSeatFlg(true);
+    setChooseSeatFlg(newFlg);
   };
 
   /** 各卓の席数変更時のロジック */
@@ -119,26 +126,35 @@ export const MainPage = () => {
   return (
     <>
       <h2 className={classes.margin}>座席表メーカー</h2>
-      <Input
-        title="卓数"
-        value={!isNaN(tableCountInput) ? tableCountInput : ""}
-        onChange={(e) => handleTableCountChange(Number(e.target.value))}
-        buttonDetail={{
-          title: "座席表作成！",
-          onClick: onClickCleateSeats,
-        }}
-      />
-      <div className={`${classes.tableCountDiv} ${classes.margin}`}>
-        {tables.map((name) => (
-          <div key={name}>
-            <Input
-              title={`${name}卓`}
-              value={tableSeatCounts[name]}
-              onChange={(e) => handleSeatCountChange(name, e.target.value)}
-            />
+      {!chooseSeatFlg && (
+        <div>
+          <Input
+            title="イベント名"
+            value={eventName}
+            onChange={(e) => handleEventNameChange(e.target.value)}
+          />
+          <Input
+            title="卓数"
+            value={!isNaN(tableCountInput) ? tableCountInput : ""}
+            onChange={(e) => handleTableCountChange(Number(e.target.value))}
+          />
+          <div className={`${classes.tableCountDiv} ${classes.margin}`}>
+            {tables.map((name) => (
+              <div key={name}>
+                <Input
+                  title={`${name}卓`}
+                  value={tableSeatCounts[name]}
+                  onChange={(e) => handleSeatCountChange(name, e.target.value)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      <button className={classes.margin} onClick={onClickCleateSeats}>
+        座席表作成！
+      </button>
+      {chooseSeatFlg && <h3 className={classes.margin}>{eventName}の座席表</h3>}
       <div className={`${classes.SeatingChartDiv} ${classes.margin}`}>
         {Object.entries(seats).map(([name, names]) => (
           <SeatingChart
