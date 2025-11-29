@@ -2,6 +2,9 @@ import { ReactNode, useEffect, useState } from "react";
 import { Input } from "../component/Input";
 import { SeatingChart } from "../component/SeatingChart";
 import classes from "./css_modules/main.module.css";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { ImportPdfButton } from "../component/importPdfButton";
 
 export const MainPage = () => {
   /** イベント名 */
@@ -14,6 +17,8 @@ export const MainPage = () => {
   const [tableSeatCounts, setTableSeatCounts] = useState<
     Record<string, number>
   >({});
+  /** 座席表ボタン */
+  const [creatButtonName, setCreateButtonName] = useState(" 座席表作成！");
   /** 名前ボタンの表示フラグ */
   const [chooseSeatFlg, setChooseSeatFlg] = useState<boolean>(false);
   /** 座席表 */
@@ -58,6 +63,7 @@ export const MainPage = () => {
     const newFlg: boolean = chooseSeatFlg ? false : true;
     setSeats(newSeats);
     setChooseSeatFlg(newFlg);
+    setCreateButtonName(chooseSeatFlg ? "座席表作成！" : "座席表編集");
   };
 
   /** 各卓の席数変更時のロジック */
@@ -104,6 +110,26 @@ export const MainPage = () => {
     setUserName("");
   };
 
+  // PDF化
+  const onClickDownloadForPDF = (elementId: string, id: string) => () => {
+    const input = document.getElementById(elementId);
+    if (input) {
+      html2canvas(input, { scale: 2.5 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/svg", 1.0); // 一度svgにする。pngでもjpegでもok
+        let pdf = new jsPDF(); // pdfを生成
+        pdf.addImage(
+          imgData,
+          "SVG",
+          5,
+          10,
+          canvas.width / 18,
+          canvas.height / 18
+        );
+        pdf.save(`${id}.pdf`);
+      });
+    }
+  };
+
   // ページ離脱時に確認
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -127,7 +153,7 @@ export const MainPage = () => {
     <>
       <h2 className={classes.margin}>座席表メーカー</h2>
       {!chooseSeatFlg && (
-        <div>
+        <div className={classes.tableEditComponent}>
           <Input
             title="イベント名"
             value={eventName}
@@ -152,41 +178,52 @@ export const MainPage = () => {
         </div>
       )}
       <button className={classes.margin} onClick={onClickCleateSeats}>
-        座席表作成！
+        {creatButtonName}
       </button>
-      {chooseSeatFlg && <h3 className={classes.margin}>{eventName}の座席表</h3>}
-      <div className={`${classes.SeatingChartDiv} ${classes.margin}`}>
-        {Object.entries(seats).map(([name, names]) => (
-          <SeatingChart
-            key={name}
-            name={name}
-            seatCounts={names.length}
-            names={names}
-            onChangeSeatName={(seatIndex, newName) => {
-              setSeats((prev) => ({
-                ...prev,
-                [name]: prev[name].map((n, i) =>
-                  i === seatIndex ? newName : n
-                ),
-              }));
-            }}
-            onDeleteSeatName={(seatIndex) => {
-              setSeats((prev) => ({
-                ...prev,
-                [name]: prev[name].map((n, i) => (i === seatIndex ? "" : n)),
-              }));
+      <ImportPdfButton
+        elementId="sheet"
+        onClick={onClickDownloadForPDF("sheet", `${eventName}座席表`)}
+        isAbled={Object.keys(seats).length > 0}
+      >
+        {Object.keys(seats).length > 0 && eventName && (
+          <h3 className={classes.margin}>{eventName}の座席表</h3>
+        )}
+        <div className={`${classes.SeatingChartDiv} ${classes.margin}`}>
+          {Object.entries(seats).map(([name, names]) => (
+            <SeatingChart
+              key={name}
+              name={name}
+              seatCounts={names.length}
+              names={names}
+              onChangeSeatName={(seatIndex, newName) => {
+                setSeats((prev) => ({
+                  ...prev,
+                  [name]: prev[name].map((n, i) =>
+                    i === seatIndex ? newName : n
+                  ),
+                }));
+              }}
+              onDeleteSeatName={(seatIndex) => {
+                setSeats((prev) => ({
+                  ...prev,
+                  [name]: prev[name].map((n, i) => (i === seatIndex ? "" : n)),
+                }));
+              }}
+            />
+          ))}
+        </div>
+        {Object.keys(seats).length > 0 && (
+          <Input
+            title={`名前`}
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            buttonDetail={{
+              title: "座席をきめる！",
+              onClick: onClickChooseSeat,
             }}
           />
-        ))}
-      </div>
-      {chooseSeatFlg && (
-        <Input
-          title={`名前`}
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          buttonDetail={{ title: "座席をきめる！", onClick: onClickChooseSeat }}
-        />
-      )}
+        )}
+      </ImportPdfButton>
     </>
   );
 };
