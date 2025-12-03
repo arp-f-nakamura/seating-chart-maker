@@ -177,7 +177,7 @@ export const MainPage = () => {
           </div>
         </div>
       )}
-      <button className={classes.margin} onClick={onClickCleateSeats}>
+      <button className={classes.margin} onClick={onClickCleateSeats}  disabled={tableCountInput === 0}>
         {creatButtonName}
       </button>
       <ImportPdfButton
