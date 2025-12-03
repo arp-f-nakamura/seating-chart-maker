@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/seating-chart-maker/static/css/main.d165788a.css",
-    "main.js": "/seating-chart-maker/static/js/main.b57e9b24.js",
+    "main.js": "/seating-chart-maker/static/js/main.e63501f5.js",
     "static/js/977.2e67ea2e.chunk.js": "/seating-chart-maker/static/js/977.2e67ea2e.chunk.js",
     "static/js/455.0de4f085.chunk.js": "/seating-chart-maker/static/js/455.0de4f085.chunk.js",
     "static/js/453.80e7279b.chunk.js": "/seating-chart-maker/static/js/453.80e7279b.chunk.js",
     "index.html": "/seating-chart-maker/index.html",
     "main.d165788a.css.map": "/seating-chart-maker/static/css/main.d165788a.css.map",
-    "main.b57e9b24.js.map": "/seating-chart-maker/static/js/main.b57e9b24.js.map",
+    "main.e63501f5.js.map": "/seating-chart-maker/static/js/main.e63501f5.js.map",
     "977.2e67ea2e.chunk.js.map": "/seating-chart-maker/static/js/977.2e67ea2e.chunk.js.map",
     "455.0de4f085.chunk.js.map": "/seating-chart-maker/static/js/455.0de4f085.chunk.js.map",
     "453.80e7279b.chunk.js.map": "/seating-chart-maker/static/js/453.80e7279b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d165788a.css",
-    "static/js/main.b57e9b24.js"
+    "static/js/main.e63501f5.js"
   ]
 }
